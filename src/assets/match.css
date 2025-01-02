@@ -1,0 +1,91 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+.match-container {
+  width: 95%;
+  max-width: 1100px;
+  display: flex;
+  background-color: hsl(0, 0%, 96%);
+  justify-content: space-around;
+  align-items: center;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid hsla(0, 0%, 0%, 0.228);
+  border-radius: 18px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.242);
+}
+.points {
+  width: 30px;
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 2em;
+}
+.pic {
+  width: 80px;
+  height: 80px;
+}
+.match {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.day {
+  font-family: "Nunito", sans-serif;
+  color: rgba(0, 0, 0, 0.687);
+  width: 50px;
+}
+.delete-edit {
+  position: absolute;
+  width: 95%;
+  max-width: 1100px;
+  height: 91px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 18px;
+  background-color: rgba(255, 255, 255, 0.532); /* Semi-transparent white */
+  backdrop-filter: blur(5px); /* Blur effect */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.delete-edit:hover {
+  opacity: 1;
+}
+.delete-edit img {
+  width: 60px;
+  filter: drop-shadow(0 0 0 transparent);
+  transition: transform 0.1s ease, filter 0.5s ease;
+}
+.delete-edit img:hover {
+  transform: scale(1.1);
+  filter: invert(1) drop-shadow(0 0 5px rgb(0, 0, 0));
+}
+.del-but,
+.edt-but {
+  border: 0;
+  background: none;
+}
+.delete-edit button:active img {
+  filter: drop-shadow(0 0 0 transparent);
+  transform: scale(1.02);
+}
+
+.swal2-popup {
+  font-family: "Nunito", sans-serif !important;
+}
+
+@media screen and  (max-width: 394px){
+  .points{
+    font-family: monospace;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .day {
+    font-family:"Nunito", sans-serif ;
+    color: rgba(0, 0, 0, 0.484);
+    width: 50px;
+  }
+}

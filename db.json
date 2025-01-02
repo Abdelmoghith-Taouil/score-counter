@@ -1,0 +1,22 @@
+{
+  "Matches": [
+    {
+      "id": "cd26",
+      "day": 1,
+      "player1Points": 2,
+      "player2Points": 1
+    },
+    {
+      "id": "7fd5",
+      "day": 2,
+      "player1Points": 6,
+      "player2Points": 8
+    },
+    {
+      "id": "8c03",
+      "day": 3,
+      "player1Points": 5,
+      "player2Points": 3
+    }
+  ]
+}
