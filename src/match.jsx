@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
 import "./assets/match.css";
-import "animate.css";
-
 export default function Match(props) {
   return (
     <>

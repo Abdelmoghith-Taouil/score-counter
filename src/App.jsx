@@ -1,11 +1,13 @@
 import Match from "./match";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import "./assets/App.css";
 
 function App() {
   const [matches, setMatches] = useState([]);
+  //creating a useState for viewing the matches in the pages in a reversed way
+  const [matchesReverse, setMatchesReverse] = useState([]);
+
   const [isAddDay, setIsAddDay] = useState(false);
   const [Nmatch, setNmatch] = useState(1);
 
@@ -20,12 +22,6 @@ function App() {
 
   const [mvp, setMvp] = useState(null);
 
-  useEffect(() => {
-    axios.get("http://192.168.1.17:3000/Matches").then((res) => {
-      setMatches(res.data.reverse());
-    });
-  }, [matches]);
-
   //Calculte the total points of the players and who is the mvp
   useEffect(() => {
     const totalPoints = matches.reduce(
@@ -39,8 +35,10 @@ function App() {
     setP1Total(totalPoints.player1);
     setP2Total(totalPoints.player2);
 
-    setMvp(p1Total > p2Total ? "player1" : "player2");
-    if (p1Total === p2Total) setMvp(null);
+    setMvp(totalPoints.player1 > totalPoints.player2 ? "player1" : "player2");
+    if (totalPoints.player1 === totalPoints.player2) setMvp(null);
+
+    setMatchesReverse([...matches].reverse());
   }, [matches]);
 
   const AddMatch = () => {
@@ -61,12 +59,13 @@ function App() {
     if (!(p1Point && p2Point)) {
       setAddMatchError("*enter both points to proceed*");
     } else {
+      const M = [...matches];
       const P = [...Points, { player1: p1Point, player2: p2Point }];
       let Day;
-      if (matches.length === 0) {
+      if (matchesReverse.length === 0) {
         Day = 1;
       } else {
-        Day = matches[0].day + 1;
+        Day = matchesReverse[0].day + 1;
       }
 
       // Calculate total points for each player
@@ -79,33 +78,34 @@ function App() {
         { player1: 0, player2: 0 } // Initial accumulator
       );
 
-      axios
-        .post("http://192.168.1.17:3000/Matches", {
-          day: Day,
-          player1Points: totalPoints.player1,
-          player2Points: totalPoints.player2,
-        })
-        .then(
-          Swal.fire({
-            toast: true,
-            position: "top-end",
-            title: "The day has been added.",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1700,
-            timerProgressBar: true,
-            showClass: {
-              popup: "animate__animated animate__bounceInRight ",
-            },
-            hideClass: {
-              popup: "animate__animated animate__zoomOutUp animate__faster",
-            },
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          })
-        );
+      M.push({
+        day: Day,
+        player1Points: totalPoints.player1,
+        player2Points: totalPoints.player2,
+      });
+
+      setMatches(M);
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        title: "The day has been added.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1700,
+        timerProgressBar: true,
+        showClass: {
+          popup: "animate__animated animate__bounceInRight ",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOutUp animate__faster",
+        },
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+
       Cancel();
     }
   };
@@ -119,7 +119,7 @@ function App() {
     setPoints([]);
   };
 
-  const deleteMatch = (day) => {
+  const deleteMatch = (d) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -130,36 +130,24 @@ function App() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        let CurrMatch = matches.filter((match) => match.day === day);
-        console.log(CurrMatch[0].id);
-        axios
-          .delete(`http://192.168.1.17:3000/Matches/${CurrMatch[0].id}`)
-          .then(() => {
-            Swal.fire({
-              toast: true,
-              position: "top-end",
-              title: "The match has been deleted.",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1700,
-              timerProgressBar: true,
-            });
-          })
-          .catch((error) => {
-            console.error("Error deleting match:", error);
-            Swal.fire(
-              "Error",
-              "There was an issue deleting the match.",
-              "error"
-            );
-          });
+        let Ms = matches
+          .filter((match) => match.day != d)
+          .map((match) => ({ ...match }));// Creates a new object for each match to Ensure No Side Effects on matchesReverse
 
-        for (let i = day + 1; i <= matches.length + 1; i++) {
-          CurrMatch = matches.filter((match) => match.day === i);
-          axios.patch(`http://192.168.1.17:3000/Matches/${CurrMatch[0].id}`, {
-            day: i - 1,
-          });
+        for (let i = d-1; i < Ms.length; i++) {
+          Ms[i].day -= 1;
         }
+
+        setMatches(Ms);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          title: "The match has been deleted.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1700,
+          timerProgressBar: true,
+        });
       }
     });
   };
@@ -291,7 +279,7 @@ function App() {
         )}
       </div>
 
-      {matches.map((match, index) => (
+      {matchesReverse.map((match, index) => (
         <Match
           key={index}
           day={match.day}
