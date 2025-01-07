@@ -2,6 +2,9 @@ import Match from "./match";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "./assets/App.css";
+import crown from "./assets/crown.png"
+import player1 from "./assets/charlo.png"
+import player2 from "./assets/iti.png"
 
 function App() {
   const [matches, setMatches] = useState([]);
@@ -160,13 +163,13 @@ function App() {
         >
           {mvp === "player1" && (
             <div className="mvp-container">
-              <img src="public/crown.png" alt="" />
+              <img src={crown} alt="" />
               <div className="mvp">MVP</div>
             </div>
           )}
           <div className="P1img">
             <img
-              src="public/charlo.png"
+              src={player1}
               alt=""
               style={{
                 border: mvp === "player1" ? "solid 2px #FFD700" : "",
@@ -189,13 +192,13 @@ function App() {
         >
           {mvp === "player2" && (
             <div className="mvp-container">
-              <img src="public/crown.png" alt="" />
+              <img src={crown} alt="" />
               <div className="mvp">MVP</div>
             </div>
           )}
           <div className="P2img">
             <img
-              src="public/iti.png"
+              src={player2}
               alt=""
               style={{
                 border: mvp === "player2" ? "solid 2px #FFD700" : "",
